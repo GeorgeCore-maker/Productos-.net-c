@@ -1,0 +1,21 @@
+<main class="login-card">
+  <p class="eyebrow">MiPrimeraApi</p>
+  <h1>Iniciar sesión</h1>
+  <p class="hint">Usa las credenciales configuradas en tu API.</p>
+
+  <form (ngSubmit)="login()">
+    <label for="usuario">Usuario</label>
+    <input id="usuario" name="usuario" [(ngModel)]="usuario" required autocomplete="username">
+
+    <label for="contrasena">Contraseña</label>
+    <input id="contrasena" name="contrasena" [(ngModel)]="contrasena" required type="password" autocomplete="current-password">
+
+    @if (error) {
+      <p class="error" role="alert">{{ error }}</p>
+    }
+
+    <button type="submit" [disabled]="cargando">
+      {{ cargando ? 'Conectando…' : 'Entrar' }}
+    </button>
+  </form>
+</main>

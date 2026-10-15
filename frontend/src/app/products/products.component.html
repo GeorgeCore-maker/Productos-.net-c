@@ -1,0 +1,134 @@
+<main class="products-page">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">MiPrimeraApi</p>
+      <h1>Productos</h1>
+    </div>
+    <div class="topbar-actions">
+      <button class="secondary-button" type="button" (click)="abrirFormulario()">
+        Agregar producto
+      </button>
+      <button class="secondary-button" type="button" (click)="logout()">
+        Cerrar sesión
+      </button>
+    </div>
+  </header>
+
+  @if (mensaje) {
+    <p class="notice" role="status">{{ mensaje }}</p>
+  }
+
+  @if (cargando) {
+    <p class="status">Cargando productos…</p>
+  } @else if (error) {
+    <section class="message error" role="alert">
+      <p>{{ error }}</p>
+      <button
+        class="secondary-button"
+        type="button"
+        (click)="cargarProductos()"
+      >
+        Reintentar
+      </button>
+    </section>
+  } @else if (productos.length === 0) {
+    <p class="message">No hay productos para mostrar.</p>
+  } @else {
+    <section class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (producto of productos; track producto.id) {
+            <tr>
+              <td>{{ producto.id }}</td>
+              <td>{{ producto.nombre }}</td>
+              <td>
+                {{
+                  producto.precio
+                    | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                }}
+              </td>
+              <td>
+                <span class="badge" [class.inactive]="!producto.activo">{{
+                  producto.activo ? 'Activo' : 'Inactivo'
+                }}</span>
+              </td>
+              <td class="actions">
+                <button
+                  class="icon-action"
+                  type="button"
+                  (click)="editar(producto)"
+                >
+                  Editar
+                </button>
+                <button
+                  class="icon-action danger"
+                  type="button"
+                  (click)="pedirEliminar(producto)"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+  }
+
+  @if (mostrarFormulario) {
+    <div class="modal-backdrop" (click)="cerrarFormulario()">
+      <app-add-product
+        (productoCreado)="alCrearProducto()"
+        (cerrar)="cerrarFormulario()"
+      />
+    </div>
+  }
+
+  @if (productoEnEdicion) {
+    <div class="modal-backdrop" (click)="cerrarEdicion()">
+      <app-edit-product
+        [producto]="productoEnEdicion"
+        (actualizado)="alActualizarProducto()"
+        (cerrar)="cerrarEdicion()"
+      />
+    </div>
+  }
+
+  @if (productoAEliminar) {
+    <div class="modal-backdrop" (click)="cancelarEliminar()">
+      <section class="confirm-card" (click)="$event.stopPropagation()">
+        <h2>Eliminar producto</h2>
+        <p>
+          ¿Seguro que quieres eliminar «{{ productoAEliminar.nombre }}»? Esta
+          acción no se puede deshacer.
+        </p>
+        <div class="form-actions">
+          <button
+            class="danger-button"
+            type="button"
+            [disabled]="eliminando"
+            (click)="eliminar()"
+          >
+            {{ eliminando ? 'Eliminando…' : 'Eliminar' }}
+          </button>
+          <button
+            class="secondary-button"
+            type="button"
+            (click)="cancelarEliminar()"
+          >
+            Cancelar
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+</main>

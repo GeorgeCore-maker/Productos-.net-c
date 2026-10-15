@@ -1,0 +1,63 @@
+<section class="modal-card" (click)="$event.stopPropagation()">
+  <header class="modal-header">
+    <h2>Crear producto</h2>
+    <button
+      class="icon-button"
+      type="button"
+      aria-label="Cerrar"
+      (click)="cerrarModal()"
+    >
+      &times;
+    </button>
+  </header>
+
+  <form [formGroup]="formulario" (ngSubmit)="guardarProducto()">
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="text" formControlName="nombre" />
+
+    @if (
+      formulario.controls.nombre.touched &&
+      formulario.controls.nombre.invalid
+    ) {
+      <small>Ingresa un nombre de entre 2 y 100 caracteres.</small>
+    }
+
+    <label for="precio">Precio (COP)</label>
+    <input
+      id="precio"
+      type="number"
+      min="0.01"
+      step="0.01"
+      formControlName="precio"
+    />
+
+    @if (
+      formulario.controls.precio.touched &&
+      formulario.controls.precio.invalid
+    ) {
+      <small>El precio debe ser mayor que cero.</small>
+    }
+
+    <label>
+      <input type="checkbox" formControlName="activo" />
+      Producto activo
+    </label>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="guardando">
+        {{ guardando ? 'Guardando…' : 'Guardar producto' }}
+      </button>
+      <button
+        class="secondary-button"
+        type="button"
+        (click)="cerrarModal()"
+      >
+        Cancelar
+      </button>
+    </div>
+  </form>
+
+  @if (mensaje) {
+    <p role="status">{{ mensaje }}</p>
+  }
+</section>
